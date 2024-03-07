@@ -5,13 +5,13 @@ import { sizeSystem } from './sizeSystem'
 import { UP, stateFlagsSystem } from './stateFlagsSystem'
 import { ListItem } from './interfaces'
 import { loggerSystem, LogLevel } from './loggerSystem'
-import { simpleMemoize } from './utils/simpleMemoize'
+// import { simpleMemoize } from './utils/simpleMemoize'
 import { recalcSystem } from './recalcSystem'
 import { find } from './AATree'
 
-const isMobileSafari = simpleMemoize(() => {
-  return /iP(ad|od|hone)/i.test(navigator.userAgent) && /WebKit/i.test(navigator.userAgent)
-})
+// const isMobileSafari = simpleMemoize(() => {
+//   return /iP(ad|od|hone)/i.test(navigator.userAgent) && /WebKit/i.test(navigator.userAgent)
+// })
 
 type UpwardFixState = [number, ListItem<any>[], number, number]
 /**
@@ -73,12 +73,8 @@ export const upwardScrollFixSystem = u.system(
       }
     }
 
-    u.subscribe(u.pipe(deviationOffset, u.withLatestFrom(deviation, isScrolling)), ([offset, deviationAmount, isScrolling]) => {
-      if (isScrolling && isMobileSafari()) {
-        u.publish(deviation, deviationAmount - offset)
-      } else {
-        scrollByWith(-offset)
-      }
+    u.subscribe(u.pipe(deviationOffset, u.withLatestFrom(deviation, isScrolling)), ([offset]) => {
+      scrollByWith(-offset)
     })
 
     // this hack is only necessary for mobile safari which does not support scrollBy while scrolling is in progress.
